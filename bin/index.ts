@@ -8,28 +8,45 @@ const program = new Command();
 
 program
   .argument("<package>", "package to analyze")
-  .option("--install", "install if safe")
+  .option("-i, --install", "install if safe")
+  .option("-f, --force-install", "install regardless of risk")
+  .option("-v, --verbose", "verbose risk reasoning")
   .parse(process.argv);
 
-const pkg = program.args[0];
+const pkgs = program.args;
 const options = program.opts();
 
-(async () => {
-  const metaRisk = await analyzeMetadata(pkg);
-
-  printResult(pkg, metaRisk);
-
-  if (options.install && metaRisk.level !== "high") {
+async function installPackages(packages: string[]) {
+  if (packages.length) {
     console.log("\nInstalling...");
     const { spawn } = await import("child_process");
 
-    const child = spawn("npm", ["install", pkg], {
+    const child = spawn("npm", ["install", ...packages], {
       stdio: "inherit",
+      shell: true,
     });
 
     child.on("close", (code) => process.exit(code ?? 0));
-  } else if (metaRisk.level === "high") {
-    console.log("\n❌ Installation blocked due to high risk");
-    process.exit(1);
   }
-})();
+}
+
+async function main() {
+  const installs: string[] = [];
+  // analyze package risks
+  for (const pkg of pkgs) {
+    const metaRisk = await analyzeMetadata(pkg);
+    printResult(pkg, metaRisk, options.verbose);
+
+    if (
+      (options.forceInstall || options.install) &&
+      metaRisk.level !== "high"
+    ) {
+      installs.push(pkg);
+    }
+  }
+
+  // finally install safe or forced packages
+  await installPackages(installs);
+}
+
+main();

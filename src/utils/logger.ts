@@ -1,18 +1,20 @@
 import chalk from "chalk";
 import { RiskResult } from "../types.js";
 
-export function printResult(pkg: string, result: RiskResult) {
+export function printResult(pkg: string, result: RiskResult, verbose: boolean) {
   if (result.level === "low") {
-    console.log(chalk.green(`✔ ${pkg} → SAFE`));
+    console.log(chalk.green(`✔ ${pkg} → score: ${result.score} → SAFE`));
   } else if (result.level === "medium") {
-    console.log(chalk.yellow(`⚠ ${pkg} → MEDIUM RISK`));
+    console.log(
+      chalk.yellow(`⚠ ${pkg} → score: ${result.score} → MEDIUM RISK`),
+    );
   } else {
-    console.log(chalk.red(`❌ ${pkg} → HIGH RISK`));
+    console.log(chalk.red(`❌ ${pkg} → score: ${result.score} → HIGH RISK`));
   }
 
-  console.log(`Score: ${result.score}`);
-
-  result.reasons.forEach((r) => {
-    console.log(`- ${r}`);
-  });
+  if (verbose) {
+    result.reasons.forEach((r) => {
+      console.log(`- ${r}`);
+    });
+  }
 }
