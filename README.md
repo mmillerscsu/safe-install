@@ -88,7 +88,8 @@ safe-install -f <package>
 {
   "threshold": "medium",
   "allow": ["lodash"],
-  "blockScripts": true
+  "blockScripts": true,
+  "cacheTTL": 3600000
 }
 ```
 

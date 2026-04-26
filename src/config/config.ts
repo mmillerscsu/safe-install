@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { Config } from "../types.js";
+import { TTL } from "../constats.js";
 
 export function loadConfig(): Config {
   const configPath = path.resolve(process.cwd(), ".safeinstallrc");
@@ -10,6 +11,7 @@ export function loadConfig(): Config {
       threshold: "high",
       allow: [],
       blockScripts: false,
+      cacheTTL: TTL,
     };
   }
 
