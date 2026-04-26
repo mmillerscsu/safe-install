@@ -3,6 +3,8 @@
 import { Command } from "commander";
 import { analyzeMetadata } from "../src/core/analyze.js";
 import { printResult } from "../src/utils/logger.js";
+import { Config } from "../src/types.js";
+import { loadConfig } from "../src/config/config.js";
 
 const program = new Command();
 
@@ -10,7 +12,6 @@ program
   .argument("<package>", "package to analyze")
   .option("-i, --install", "install if safe")
   .option("-f, --force-install", "install regardless of risk")
-  .option("-v, --verbose", "verbose risk reasoning")
   .parse(process.argv);
 
 const pkgs = program.args;
@@ -32,10 +33,12 @@ async function installPackages(packages: string[]) {
 
 async function main() {
   const installs: string[] = [];
+  const config: Config = loadConfig();
+
   // analyze package risks
   for (const pkg of pkgs) {
-    const metaRisk = await analyzeMetadata(pkg);
-    printResult(pkg, metaRisk, options.verbose);
+    const metaRisk = await analyzeMetadata(pkg, config);
+    printResult(pkg, metaRisk);
 
     if (
       (options.forceInstall || options.install) &&

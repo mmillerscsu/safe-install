@@ -3,8 +3,11 @@ import { analyzeScripts } from "../analyzers/scripts.js";
 import { analyzeAge } from "../analyzers/age.js";
 import { analyzeMaintainers } from "../analyzers/maintainers.js";
 import { calculateRisk } from "../scorers/score.js";
+import { loadConfig } from "../config/config.js";
+import { Config } from "../types.js";
+import { applyPolicy } from "../config/policy.js";
 
-export async function analyzeMetadata(pkgName: string) {
+export async function analyzeMetadata(pkgName: string, config: Config) {
   const pkg = await fetchPackage(pkgName);
 
   const results = [
@@ -15,6 +18,7 @@ export async function analyzeMetadata(pkgName: string) {
 
   const totalScore = results.reduce((sum, r) => sum + r.score, 0);
   const reasons = results.flatMap((r) => r.risks);
+  const calculatedRisk = calculateRisk(totalScore, reasons);
 
-  return calculateRisk(totalScore, reasons);
+  return applyPolicy(pkgName, calculatedRisk, config);
 }

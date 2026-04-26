@@ -24,6 +24,14 @@ export type NpmPackageVersion = {
 
 export type RiskResult = {
   score: number;
-  level: "low" | "medium" | "high";
+  level: RiskLevel;
   reasons: string[];
+};
+
+export type RiskLevel = "low" | "medium" | "high";
+
+export type Config = {
+  threshold: RiskLevel;
+  allow: string[];
+  blockScripts: boolean;
 };
