@@ -45,3 +45,9 @@ export function setFileCache(key: string, value: RiskResult) {
     ),
   );
 }
+
+export function clearFileCache() {
+  ensureDir();
+
+  fs.truncate(CACHE_DIR, 0, () => console.log("File cache cleared"));
+}

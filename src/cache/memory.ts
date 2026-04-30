@@ -23,3 +23,7 @@ export function setCache(key: string, value: RiskResult) {
     timestamp: Date.now(),
   });
 }
+
+export function clearCache() {
+  cache.clear();
+}

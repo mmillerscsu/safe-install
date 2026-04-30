@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { Config } from "../types.js";
-import { TTL } from "../constats.js";
+import { TTL } from "../constants.js";
 
 export function loadConfig(): Config {
   const configPath = path.resolve(process.cwd(), ".safeinstallrc");

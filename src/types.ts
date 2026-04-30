@@ -23,6 +23,7 @@ export type NpmPackageVersion = {
 };
 
 export type RiskResult = {
+  name: string;
   score: number;
   level: RiskLevel;
   reasons: string[];
@@ -30,6 +31,7 @@ export type RiskResult = {
 };
 
 export type RiskLevel = "low" | "medium" | "high";
+export type PackageResult = "safe" | "warning" | "blocked";
 
 export type Config = {
   threshold: RiskLevel;
@@ -41,4 +43,9 @@ export type Config = {
 export type CacheEntry<RiskResult> = {
   data: RiskResult;
   timestamp: number;
+};
+
+export type JsonOutput = {
+  success: boolean;
+  results: RiskResult[];
 };

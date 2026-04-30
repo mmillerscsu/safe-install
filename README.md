@@ -84,6 +84,8 @@ safe-install -f <package>
 
 ## ⚙️ Optional config
 
+`.safeinstallrc`
+
 ```json
 {
   "threshold": "medium",

@@ -2,7 +2,7 @@ import { fetchPackage } from "../resolvers/npm.js";
 import { analyzeScripts } from "../analyzers/scripts.js";
 import { analyzeAge } from "../analyzers/age.js";
 import { analyzeMaintainers } from "../analyzers/maintainers.js";
-import { calculateRisk } from "../scorers/score.js";
+import { calculateRisk, scorePackage } from "../scorers/score.js";
 import { Config, RiskResult } from "../types.js";
 import { applyPolicy } from "../config/policy.js";
 import { getCacheKey } from "../utils/cacheKey.js";
@@ -27,15 +27,7 @@ export async function analyzeMetadata(
     return { ...fc, cached: true };
   }
 
-  const results = [
-    analyzeScripts(pkg),
-    analyzeAge(pkg),
-    analyzeMaintainers(pkg),
-  ];
-
-  const totalScore = results.reduce((sum, r) => sum + r.score, 0);
-  const reasons = results.flatMap((r) => r.risks);
-  const calculatedRisk = calculateRisk(totalScore, reasons);
+  const calculatedRisk = scorePackage(pkg);
 
   setCache(key, calculatedRisk);
   setFileCache(key, calculatedRisk);
